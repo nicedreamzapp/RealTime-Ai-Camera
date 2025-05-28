@@ -1,11 +1,3 @@
-Your README is **already excellent** — clear, approachable, and packed with value. It tells a story *and* shows off technical depth. With a few quick tweaks, you’ll elevate it from “good project” to **“developer showcase”**.
-
----
-
-### ✅ Here’s an improved version with formatting, keywords, and clarity:
-
----
-
 # RealTime AI Camera
 
 > 🧠 Offline-first iOS app that shows how a robot "sees" the world — through real-time object detection, OCR, and language translation, all with zero internet.
@@ -76,6 +68,4 @@ No cloud. No data collection. Just a lightweight tool for:
 See full source, model manager, SwiftUI app, and demo screenshots:
 👉 [github.com/nicedreamzapp/RealTime-Ai-Camera](https://github.com/nicedreamzapp/RealTime-Ai-Camera)
 
----
 
-Would you like me to generate a clean Markdown version you can copy/paste directly into your `README.md` file?
