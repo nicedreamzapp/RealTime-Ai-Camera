@@ -20,7 +20,7 @@ No cloud. No data collection. Just a lightweight tool for:
 ### 🧩 Core Features
 
 * 🎯 **268+ object classes**
-  *(Open Images V7 via coreml, vision, trained locally)*
+  *(Open Images via coreml, vision, trained locally)*
 * 🟢 **Real-time detection**
   Object name + confidence — no bounding box, just centered smart labeling
 * 🔊 **Speech output**
@@ -59,7 +59,7 @@ No cloud. No data collection. Just a lightweight tool for:
 * ✅ Works fully in Python (Mac + webcam)
 * ⚙️ CoreML + Vision integration for iOS in progress
 * ⚙️ Using **Python 3.10**, verified **ONNX→CoreML** export path
-* ✅ Models trained from scratch using **Open Images V7 (601 classes)**
+* ✅ Models trained from scratch using **Open Images (268 classes)**
 
 ---
 
