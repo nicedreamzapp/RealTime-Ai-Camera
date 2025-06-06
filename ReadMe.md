@@ -19,8 +19,8 @@ No cloud. No data collection. Just a lightweight tool for:
 
 ### 🧩 Core Features
 
-* 🎯 **600+ object classes**
-  *(Open Images V7 via YOLOv8, trained locally)*
+* 🎯 **268+ object classes**
+  *(Open Images V7 via coreml, vision, trained locally)*
 * 🟢 **Real-time detection**
   Object name + confidence — no bounding box, just centered smart labeling
 * 🔊 **Speech output**
