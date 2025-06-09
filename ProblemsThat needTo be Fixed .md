@@ -1,54 +1,45 @@
-# 🧠 RealTime-Ai-Camera: CoreML Export Issues (Open Images V7, YOLOv8)
+## ✅ Summary of CoreML Export Issues (YOLOv8 + Open Images V7)
 
-This document outlines all the problems encountered so far when exporting a YOLOv8 model trained on Open Images V7 for iOS use via CoreML, as well as whether each issue has been addressed.
-
----
-
-## ✅ Current Problems & What We've Tried
+We attempted to export a YOLOv8 model trained on Open Images V7 to CoreML for iOS deployment. Despite multiple strategies and environment setups, we encountered persistent issues and decided to abandon this route in favor of a Create ML–based workflow.
 
 | #  | **Problem**                                                                                   | **Status / Attempted Fix**                                                                                          |
 |----|-----------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
 | 1  | CoreML export breaks class label mapping (Open Images classes not preserved)                 | ✅ Tried `.pt → .onnx → .mlmodel` pipeline, `class_names_600_FULL.yaml`, embedding with Netron — still broken         |
 | 2  | Converted CoreML model does not decode detections properly (anchors, confidence, NMS)        | ✅ Tried `coremltools==5.2.0`, `5.0b5`, and `onnx-coreml` — still fails to retain proper YOLOv8 behavior              |
 | 3  | Mismatch between macOS (Python) inference and iOS CoreML results                             | ✅ Confirmed `.pt`/`.onnx` works on Mac, but same model fails or mislabels in iOS                                    |
-| 4  | No official Ultralytics support for Open Images → CoreML pipeline                            | ✅ Just filed this as a feature request on GitHub                                                                    |
-| 5  | No simple way to embed 600+ Open Images labels into CoreML                                   | ✅ Tried several hacks — `userDefinedMetadata`, classifier layers, and JSON edits — not consistent                   |
-| 6  | CoreML model does not replicate YOLO confidence/NMS behavior                                 | ✅ Implemented Swift-side decoding — still unreliable with false positives / missed detections                      |
-| 7  | Output shape from CoreML model does not match expectations                                   | ✅ Verified tensor shapes in ONNX and CoreML — layout is valid, decoding still off                                   |
-| 8  | Vision framework not suited for YOLOv8-style decoding                                        | ✅ Building a manual Swift decoder — still requires clean YOLO output from CoreML to work properly                   |
-| 9  | Manual `.mlmodel` conversion requires strict Python env setup                                | ✅ Created `coreml_env_38_real` with validated package versions, but still hit `nnssa` and other issues              |
-| 10 | Unpacked `.mlpackage` and tested extracted files directly                                    | ✅ Used `.mlmodel`, `Manifest.json`, and `weights.bin` — same behavior when loaded into Xcode                        |
+| 4  | No official Ultralytics support for Open Images → CoreML pipeline                            | ✅ Filed GitHub issue ([#1125](https://github.com/ultralytics/hub/issues/1125)) — only solution offered was HUB      |
+| 5  | No simple way to embed 600+ Open Images labels into CoreML                                   | ✅ Tried `userDefinedMetadata`, classifier layers, and JSON edits — inconsistent or unsupported                      |
+| 6  | CoreML model does not replicate YOLO confidence/NMS behavior                                 | ✅ Built Swift-side decoder — unreliable results with false positives / missing detections                           |
+| 7  | Output shape from CoreML model does not match expectations                                   | ✅ Tensor layout valid in ONNX/CoreML — decoding logic still failed                                                  |
+| 8  | Vision framework not designed for YOLOv8 decoding                                            | ✅ Began manual Swift implementation — blocked by broken upstream output format                                      |
+| 9  | `.mlmodel` export requires strict Python env setup                                           | ✅ Used custom env `coreml_env_38_real` — encountered `nnssa` and compatibility issues                               |
+| 10 | Unpacking `.mlpackage` and modifying contents didn’t help                                    | ✅ Extracted model, JSON, weights — same issues when reloaded in Xcode                                               |
 
 ---
 
-## 🔍 Ultralytics Suggestions from HUB Docs
+## 🔍 Ultralytics HUB Response
 
-| #  | **Suggestion**                                            | **Tried?** | **Notes**                                                                                      |
-|----|-----------------------------------------------------------|------------|------------------------------------------------------------------------------------------------|
-| 1  | Use HUB for training and exporting CoreML models          | ❌         | HUB does not support Open Images V7 format directly, only COCO or YOLO-format datasets         |
-| 2  | Use the Ultralytics iOS app for on-device inference       | ❌         | Not applicable — this project is a standalone offline-first iOS app, not a HUB client          |
-| 3  | Follow HUB export + CoreML integration guides             | ✅         | Guides assume COCO-style YOLO exports — not compatible with Open Images V7 setup               |
-| 4  | Wait for Ultralytics engineer response                    | ⏳         | Filed the issue formally, awaiting a real response beyond the bot-generated assistant message  |
+| #  | **Suggestion**                                    | **Tried?** | **Notes**                                                                                      |
+|----|---------------------------------------------------|------------|------------------------------------------------------------------------------------------------|
+| 1  | Use HUB to export a CoreML-compatible model       | ❌         | We chose not to use HUB due to licensing concerns and project independence                     |
+| 2  | Use the Ultralytics iOS app for inference         | ❌         | Not applicable — this project is a standalone, offline-first app                              |
+| 3  | Follow HUB export and CoreML guides               | ✅         | Guides assume COCO-style YOLOv8 exports — not applicable to Open Images format                 |
+| 4  | Wait for engineer response                        | ⏳         | Received generic recommendation to use HUB ([Issue #1125](https://github.com/ultralytics/hub/issues/1125))           |
 
 ---
 
-## 🛠️ Next Step Ideas
+## ✅ Where the Project is Now
 
-1. Write a YOLOv8-style Swift decoder that re-implements:
-   - Grid, stride, and anchor decoding
-   - Confidence thresholding + sigmoid
-   - Class probability extraction
-   - Manual NMS
-2. Build a CoreML converter that injects:
-   - `NeuralNetworkBuilder` class labels
-   - Custom metadata for anchors
-3. Reach out to Apple CoreML engineers via Feedback Assistant
-4. Ask Ultralytics team for:
-   - Known-good `.mlmodel` examples with >500 classes
-   - Export scripts for Open Images V7 → CoreML (if internal support exists)
+We’ve since shifted to training with **Create ML** using a **268-class dataset** in COCO format for iOS deployment. This new pipeline is fully offline, has no external licensing restrictions, and supports clean, verifiable model iteration using Apple-native tools.
+
+✅ **Create ML working with hand-labeled data**
+
+🧠 **iOS deployment is the current focus**, with YOLOv5 experiments continuing for Android/PC
+
+🛠️ **The goal**: Let users generate their own detection models, label them with guidance, and deploy privately or publicly
 
 ---
 
 ## 📎 Reference
 
-Our iOS app: [github.com/nicedreamzapp/RealTime-Ai-Camera](https://github.com/nicedreamzapp/RealTime-Ai-Camera)
+iOS app: [github.com/nicedreamzapp/RealTime-Ai-Camera](https://github.com/nicedreamzapp/RealTime-Ai-Camera)
