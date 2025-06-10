@@ -63,7 +63,7 @@ No cloud. No data collection. Just a lightweight tool for:
 
 ---
 
-### 📦 app festures templates and layout in the new Liquid Glass matching apple's new exciting layout
+### 📦 app festures templates with the new Liquid Glass matching apple's new exciting layout
 
 See full source, model manager, SwiftUI app, and demo screenshots:
 👉 [github.com/nicedreamzapp/RealTime-Ai-Camera](https://github.com/nicedreamzapp/RealTime-Ai-Camera)
